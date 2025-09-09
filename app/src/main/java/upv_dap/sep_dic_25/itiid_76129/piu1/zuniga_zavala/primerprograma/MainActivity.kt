@@ -14,20 +14,27 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,7 +45,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import upv_dap.sep_dic_25.itiid_76129.piu1.zuniga_zavala.primerprograma.ui.theme.PrimerProgramaTheme
+//private val FabPosition.Companion.CenterEnd: FabPosition
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,15 +55,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PrimerProgramaTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                /*Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Eder",
+                        name = "Android Marco Aurelio Nuno Maganda",
                         modifier = Modifier.padding(innerPadding)
                     )
-                }
+                }*/
                 MyScreen()
             }
         }
+    }
+}
+
+class Lista {
+    val stringList : MutableList<String> = mutableListOf()
+    fun append(X : String) {
+        stringList.add(X)
+    }
+    fun remove (X : String) {
+        stringList.remove(X)
+    }
+    fun toCadena  () : String {
+        return (stringList.toString())
     }
 }
 
@@ -67,13 +89,6 @@ class Counter {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,37 +96,62 @@ fun MyScreen() {
     val counter = remember { Counter() }
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("My App") })
+            TopAppBar(title = { Text("Primera Aplication Jetpack Compose") })
         },
+        /*
         bottomBar = {
             BottomAppBar {
-                Text("Bottom Bar")
+                Text("Barra de Estatus")
             }
-        },
+        },*/
         floatingActionButton = {
             val context = LocalContext.current
-            FloatingActionButton(onClick = { /* Handle click */
-                val sum: (Int, Int) -> Int = { a, b -> a + b }
-                Toast.makeText(context,"Evento de Click Sobre boton floante: "+sum(5,7)+ "clicks"+counter.count,Toast.LENGTH_SHORT).show()
-                counter.increment()
-            }) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
+            FloatingActionButton(
+                modifier = Modifier.offset(x = 0.dp, y = -60.dp),
+                onClick = { /* Handle click */
+                    val sum: (Int, Int) -> Int = { a, b -> a + b }
+                    Toast.makeText(context,
+                        "Evento de Click Sobre boton floante: "+sum(5,7)+ " clicks"+counter.count,
+                        Toast.LENGTH_SHORT).show()
+                    counter.increment()
+                }) {
+                Icon(Icons.Default.Build, contentDescription = "Add")
             }
+
+            // Add some spacing between FABs
+            ExtendedFloatingActionButton(
+                //modifier = Modifier.offset(x = 10.dp, y = 10.dp),
+                text = {  },
+                icon = { Icon(Icons.Filled.Call, "Edit button") },
+                onClick = { /* Handle FAB 2 click */
+                    Toast.makeText(context,
+                        "CLick Segundo Boton",
+                        Toast.LENGTH_SHORT).show()
+                },
+                modifier = Modifier.padding(top = 8.dp) // Add padding between FABs
+            )
+
         },
+        //floatingActionButtonPosition = FabPosition.CenterEnd,
+
         content = { paddingValues ->
             // Main content goes here
             Column(modifier = Modifier.padding(paddingValues)) {
-                Text("Hello from the content!")
-                Greeting(name = "Android")
-                MyTextFieldUI()
+                //UserCard("Marco","Nuño-Maganda")
+                //Text("Hello from the content!")
+                //Greeting(name = "Android")
+                MyPanelDeControlesUI()
             }
         }
     )
 }
 
+
 // Demo 6
 @Composable
-fun MyTextFieldUI() {
+fun MyPanelDeControlesUI() {
+    val lista = remember {  Lista() }
+
     val context = LocalContext.current
     // Remember the text entered in the TextField
     var text by remember { mutableStateOf("") }
@@ -132,27 +172,29 @@ fun MyTextFieldUI() {
             onValueChange = {
                 text = it
             },
-            label = { Text(text = "Enter your text") },
+            label = { Text(text = "Enter your name") },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(100.dp))
 
         Button(
             modifier = Modifier.fillMaxWidth(), // Equivalente a match_parent en el XML
             onClick = { /* Handle button click */
-                Toast.makeText(context,"Dato ingresado por USER en el TextField: "+text,Toast.LENGTH_SHORT).show()
+                lista.append(text)
+                //Toast.makeText(context,"Dato ingresado por USER en el TextField: "+text,Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,"Dato ingresado por USER en el TextField: "+lista.toCadena(),Toast.LENGTH_SHORT).show()
                 text="" //Borar el TextField
             }) {
-            Text(text = "Irse ALV")
+            Text(text = "Formatear")
         }
 
         // Displaying the text entered by the user
         Text(text = "You entered: $text")
 
         //Greeting("Android")
-        FancyButton("Mejor instalar windows")
-        UserCard("Eder","Omar")
+        FancyButton("Mejor Instalar Windows")
+        UserCard("Pluto","Gomez")
 
     }
 }
@@ -178,18 +220,29 @@ fun UserCard(first: String, second: String) {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Red)) {
-        Text(text = first, fontSize = 32.sp)
+        Text(text = first, fontSize=32.sp)
+        //Text(text = second)
     }
     Row (
+        //modifier = Modifier.fillMaxWidth().background(Color.Yellow)  {// Ademas agregar un colorcito
+        //modifier = Modifier.fillMaxSize().padding(16.dp)) {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Green)) {
-        Text(text = second, fontSize = 50.sp)
+        //Text(text = first)
+        Text(text = second, fontSize=32.sp)
     }
 }
-class Lista {
 
+
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
 }
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
